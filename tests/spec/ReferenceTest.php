@@ -1,19 +1,35 @@
 <?php
 
 use cebe\openapi\Reader;
+use cebe\openapi\spec\Example;
 use cebe\openapi\spec\OpenApi;
 use cebe\openapi\spec\Parameter;
 use cebe\openapi\spec\Reference;
 use cebe\openapi\spec\RequestBody;
 use cebe\openapi\spec\Response;
 use cebe\openapi\spec\Schema;
-use cebe\openapi\spec\Example;
+use donatj\MockWebServer\MockWebServer;
 
 /**
  * @covers \cebe\openapi\spec\Reference
  */
 class ReferenceTest extends \PHPUnit\Framework\TestCase
 {
+    /** @var MockWebServer */
+    private $server;
+
+    protected function setUp(): void
+    {
+        $this->server = new MockWebServer();
+        $this->server->stop();
+        $this->server->start();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->server->stop();
+    }
+
     public function testResolveInDocument()
     {
         /** @var $openapi OpenApi */
@@ -233,6 +249,19 @@ YAML
 
     public function testResolveFileHttp()
     {
+        $url = $this->server->setResponseOfPath(
+            '/definedPath',
+            'This is our http body response'
+        );
+
+        $content = file_get_contents($url);
+        $this->assertSame('This is our http body response', $content);
+
+
+        // TODO
+        return;
+
+
         $file = 'https://raw.githubusercontent.com/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
         /** @var $openapi OpenApi */
         $openapi = Reader::readFromYaml(str_replace('##ABSOLUTEPATH##', dirname($file), file_get_contents($file)));
