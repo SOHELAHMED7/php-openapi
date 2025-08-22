@@ -81,6 +81,14 @@ jobs:
         run: "composer require phpunit/phpunit '^9.5' --dev --no-interaction --ansi --no-install"
         if: matrix.php == '8.1' || matrix.php == '8.2' || matrix.php == '8.3'
 
+      # ✅ Fix for Windows: enable sockets if missing
+      - name: Enable sockets on Windows
+        if: runner.os == 'Windows'
+        run: |
+          echo "extension=sockets" | Out-File -Append "C:\tools\php\php.ini"
+          php -m | findstr sockets || (echo "sockets not enabled" && exit 1)
+
+
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v2"
         with:
