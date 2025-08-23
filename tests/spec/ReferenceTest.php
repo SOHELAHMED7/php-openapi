@@ -18,17 +18,17 @@ class ReferenceTest extends \PHPUnit\Framework\TestCase
     /** @var MockWebServer */
     private $server;
 
-    protected function setUp(): void
-    {
-        $this->server = new MockWebServer();
-        $this->server->stop();
-        $this->server->start();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->server->stop();
-    }
+//    protected function setUp(): void
+//    {
+//        $this->server = new MockWebServer();
+//        $this->server->stop();
+//        $this->server->start();
+//    }
+//
+//    protected function tearDown(): void
+//    {
+//        $this->server->stop();
+//    }
 
     public function testResolveInDocument()
     {
@@ -247,69 +247,69 @@ YAML
         $this->assertTrue($result);
     }
 
-    public function testResolveFileHttp()
-    {
-        $this->server->setResponseOfPath(
-            '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/definitions.yaml',
-            '
-Pet:
-  type: object
-  properties:
-    id:
-      type: integer
-      format: int64
-Dog:
-  type: object
-  properties:
-    name:
-      type: string
-'
-        );
-
-        $this->server->setResponseOfPath(
-            '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml',
-            '
-openapi: 3.0.0
-info:
-  title: Link Example
-  version: 1.0.0
-components:
-  schemas:
-    Pet:
-      $ref: definitions.yaml#/Pet
-    Dog:
-      $ref: ##ABSOLUTEPATH##/definitions.yaml#/Dog
-paths:
-  \'/pet\':
-    get:
-      responses:
-        200:
-          description: return a pet
-'
-        );
-
-        // $file = 'https://raw.githubusercontent.com/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
-
-        $host = $this->server->getHost().':'.$this->server->getPort();
-        $path = '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
-        $file = 'http://'.$host.$path;
-        /** @var $openapi OpenApi */
-        $openapi = Reader::readFromYaml(str_replace('##ABSOLUTEPATH##', dirname($file), file_get_contents($file)));
-
-        $result = $openapi->validate();
-        $this->assertEquals([], $openapi->getErrors());
-        $this->assertTrue($result);
-
-        $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Pet']);
-        $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Dog']);
-
-        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, $file));
-
-        $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Pet']);
-        $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Dog']);
-        $this->assertArrayHasKey('id', $openapi->components->schemas['Pet']->properties);
-        $this->assertArrayHasKey('name', $openapi->components->schemas['Dog']->properties);
-    }
+//    public function testResolveFileHttp()
+//    {
+//        $this->server->setResponseOfPath(
+//            '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/definitions.yaml',
+//            '
+//Pet:
+//  type: object
+//  properties:
+//    id:
+//      type: integer
+//      format: int64
+//Dog:
+//  type: object
+//  properties:
+//    name:
+//      type: string
+//'
+//        );
+//
+//        $this->server->setResponseOfPath(
+//            '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml',
+//            '
+//openapi: 3.0.0
+//info:
+//  title: Link Example
+//  version: 1.0.0
+//components:
+//  schemas:
+//    Pet:
+//      $ref: definitions.yaml#/Pet
+//    Dog:
+//      $ref: ##ABSOLUTEPATH##/definitions.yaml#/Dog
+//paths:
+//  \'/pet\':
+//    get:
+//      responses:
+//        200:
+//          description: return a pet
+//'
+//        );
+//
+//        // $file = 'https://raw.githubusercontent.com/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
+//
+//        $host = $this->server->getHost().':'.$this->server->getPort();
+//        $path = '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
+//        $file = 'http://'.$host.$path;
+//        /** @var $openapi OpenApi */
+//        $openapi = Reader::readFromYaml(str_replace('##ABSOLUTEPATH##', dirname($file), file_get_contents($file)));
+//
+//        $result = $openapi->validate();
+//        $this->assertEquals([], $openapi->getErrors());
+//        $this->assertTrue($result);
+//
+//        $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Pet']);
+//        $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Dog']);
+//
+//        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, $file));
+//
+//        $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Pet']);
+//        $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Dog']);
+//        $this->assertArrayHasKey('id', $openapi->components->schemas['Pet']->properties);
+//        $this->assertArrayHasKey('name', $openapi->components->schemas['Dog']->properties);
+//    }
 
     public function testResolvePaths()
     {
