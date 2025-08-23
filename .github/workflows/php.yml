@@ -74,7 +74,7 @@ jobs:
           coverage: pcov
           tools: composer:v2
 
-      # ✅ Fix for Windows: enable sockets if missing
+      # Fix for Windows: enable sockets if missing for package donatj/mock-webserver (https://github.com/cebe/php-openapi/issues/236)
       - name: Enable sockets on Windows
         if: runner.os == 'Windows'
         run: |
