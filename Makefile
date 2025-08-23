@@ -47,7 +47,7 @@ install: composer.json package.json
 test: unit test-recursion.json test-recursion2.yaml test-recursion3_index.yaml test-empty-maps.json
 
 unit:
-	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --verbose --colors=always $(TESTCASE)
+	$(DOCKER_PHP) php -d output_buffering=0 $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --verbose --colors=always $(TESTCASE)
 
 # test specific JSON files in tests/spec/data/
 # e.g. test-recursion will run validation on tests/spec/data/recursion.json
