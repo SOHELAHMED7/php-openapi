@@ -249,10 +249,27 @@ YAML
 
     public function testResolveFileHttp()
     {
-        return;
+        $this->server->setResponseOfPath(
+            '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/definitions.yaml',
+            '
+Pet:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+Dog:
+  type: object
+  properties:
+    name:
+      type: string
+'
+        );
+
         $this->server->setResponseOfPath(
             '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml',
-            'openapi: 3.0.0
+            '
+openapi: 3.0.0
 info:
   title: Link Example
   version: 1.0.0
@@ -267,21 +284,14 @@ paths:
     get:
       responses:
         200:
-          description: return a pet'
+          description: return a pet
+'
         );
 
-//        $content = file_get_contents($url);
-//        $this->assertSame('This is our http body response', $content);
+        // $file = 'https://raw.githubusercontent.com/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
 
-
-        // TODO
-//        return;
-
-
-        // TODO
         $host = $this->server->getHost().':'.$this->server->getPort();
         $path = '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
-//        $file = 'https://raw.githubusercontent.com/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
         $file = 'http://'.$host.$path;
         /** @var $openapi OpenApi */
         $openapi = Reader::readFromYaml(str_replace('##ABSOLUTEPATH##', dirname($file), file_get_contents($file)));
