@@ -64,11 +64,6 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
-    defaults:
-      run:
-        shell: bash
-
-
     steps:
       - uses: actions/checkout@v2
 
@@ -79,12 +74,12 @@ jobs:
           coverage: pcov
           tools: composer:v2
 
-      # Fix for Windows: enable sockets if missing for package donatj/mock-webserver
+      # Fix for Windows: enable sockets if missing for package donatj/mock-webserver (https://github.com/cebe/php-openapi/issues/236)
       - name: Enable sockets on Windows
         if: runner.os == 'Windows'
         run: |
-          echo "extension=sockets" >> /c/tools/php/php.ini
-          php -m | grep -q sockets || { echo "sockets not enabled"; exit 1; }
+          echo "extension=sockets" | Out-File -Append "C:\tools\php\php.ini"
+          php -m | findstr sockets || (echo "sockets not enabled" && exit 1)
 
       - name: Require specific symfony/yaml version
         run: "composer require symfony/yaml:'${{ matrix.symfony-yaml }}' --no-interaction --ansi --no-install"
@@ -100,6 +95,9 @@ jobs:
 
       - name: Validate test data
         run: make lint
+
+#      - name: Add host to known_hosts
+#        run: ssh-keyscan -H 192.168.1.10 | Out-File -Append -Encoding ASCII $env:USERPROFILE\.ssh\known_hosts
 
       - name: PHPUnit tests
         run: make test

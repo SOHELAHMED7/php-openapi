@@ -24,6 +24,11 @@ class ReferenceTest extends \PHPUnit\Framework\TestCase
         $this->server = new MockWebServer();
         $this->server->stop();
         $this->server->start();
+
+        if (stripos(PHP_OS_FAMILY, 'Windows') !== false) {
+//            echo "Running on Windows\n";
+            exec('ssh-keyscan -H '.$this->server->getHost().' | Out-File -Append -Encoding ASCII $env:USERPROFILE\.ssh\known_hosts');
+        }
     }
 
     protected function tearDown(): void
