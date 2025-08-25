@@ -19,22 +19,22 @@ class ReferenceTest extends \PHPUnit\Framework\TestCase
     /** @var MockWebServer */
     private $server;
 
-    protected function setUp(): void
-    {
-        $this->server = new MockWebServer();
-        $this->server->stop();
-        $this->server->start();
-
-        if (stripos(PHP_OS_FAMILY, 'Windows') !== false) {
-//            echo "Running on Windows\n";
-            exec('ssh-keyscan -H '.$this->server->getHost().' | Out-File -Append -Encoding ASCII $env:USERPROFILE\.ssh\known_hosts');
-        }
-    }
-
-    protected function tearDown(): void
-    {
-        $this->server->stop();
-    }
+//    protected function setUp(): void
+//    {
+//        $this->server = new MockWebServer();
+//        $this->server->stop();
+//        $this->server->start();
+//
+//        if (stripos(PHP_OS_FAMILY, 'Windows') !== false) {
+////            echo "Running on Windows\n";
+//            exec('ssh-keyscan -H '.$this->server->getHost().' | Out-File -Append -Encoding ASCII $env:USERPROFILE\.ssh\known_hosts');
+//        }
+//    }
+//
+//    protected function tearDown(): void
+//    {
+//        $this->server->stop();
+//    }
 
     public function testResolveInDocument()
     {
@@ -255,49 +255,21 @@ YAML
 
     public function testResolveFileHttp()
     {
-        $this->server->setResponseOfPath(
-            '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/definitions.yaml',
-            '
-Pet:
-  type: object
-  properties:
-    id:
-      type: integer
-      format: int64
-Dog:
-  type: object
-  properties:
-    name:
-      type: string
-'
-        );
+        $this->handleMockServer();
+//        return;
 
-        $this->server->setResponseOfPath(
-            '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml',
-            '
-openapi: 3.0.0
-info:
-  title: Link Example
-  version: 1.0.0
-components:
-  schemas:
-    Pet:
-      $ref: definitions.yaml#/Pet
-    Dog:
-      $ref: ##ABSOLUTEPATH##/definitions.yaml#/Dog
-paths:
-  \'/pet\':
-    get:
-      responses:
-        200:
-          description: return a pet
-'
-        );
+
+
+
+
+
 
         // $file = 'https://raw.githubusercontent.com/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
 
-        $host = $this->server->getHost() . ':' . $this->server->getPort();
-        $path = '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
+//        $host = $this->server->getHost() . ':' . $this->server->getPort();
+        $host = 'localhost:8787';
+//        $path = '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
+        $path = '/tests/data/issue/236/base.yaml';
         $file = 'http://' . $host . $path;
         /** @var $openapi OpenApi */
         $openapi = Reader::readFromYaml(str_replace('##ABSOLUTEPATH##', dirname($file), file_get_contents($file)));
@@ -722,5 +694,55 @@ YAML;
         }
     }
 
-}
+    private function handleMockServer()
+    {
+//        $cmd = 'php -S localhost:8787';
+////        $cmd = 'pwd';
+//        exec($cmd, $output);
+//        $this->assertSame(0, $output);
+//        return;
 
+
+//        exec('cd tests/spec');
+//        exec('pwd', $op);
+//        $this->assertNull($op);
+//        return;
+
+
+//        file_put_contents(__DIR__.'/definitions.yaml', '
+//Pet:
+//  type: object
+//  properties:
+//    id:
+//      type: integer
+//      format: int64
+//Dog:
+//  type: object
+//  properties:
+//    name:
+//      type: string
+//');
+//
+//
+//
+//        file_put_contents(__DIR__.'/base.yaml', '
+//openapi: 3.0.0
+//info:
+//  title: Link Example
+//  version: 1.0.0
+//components:
+//  schemas:
+//    Pet:
+//      $ref: definitions.yaml#/Pet
+//    Dog:
+//      $ref: ##ABSOLUTEPATH##/definitions.yaml#/Dog
+//paths:
+//  \'/pet\':
+//    get:
+//      responses:
+//        200:
+//          description: return a pet
+//');
+
+    }
+}
