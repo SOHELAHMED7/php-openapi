@@ -274,7 +274,7 @@ YAML
         // $file = 'https://raw.githubusercontent.com/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
 
         if (stripos(PHP_OS_FAMILY, 'Windows') !== false) {
-            exec('start php -S localhost:8787', $op);
+            exec('pwsh -Command "Start-Process php -ArgumentList \'-S localhost:8787\' -NoNewWindow"', $op);
         } else {
             exec('nohup php -S localhost:8787 > /dev/null 2>&1 &', $op);
         }
