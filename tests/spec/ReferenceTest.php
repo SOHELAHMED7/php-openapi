@@ -234,16 +234,16 @@ YAML
 
     public function testResolveFileHttp()
     {
+        $host = 'localhost:8787'; # create mock web server to avoid calling real GitHub URL and rate limit hit
         // $file = 'https://raw.githubusercontent.com/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
         if (stripos(PHP_OS_FAMILY, 'Windows') !== false) {
-            $cmd = 'powershell -Command "Start-Process php -ArgumentList \'-S localhost:8787\' -NoNewWindow"';
-            popen($cmd, "r");
+            $cmd = 'powershell -Command "Start-Process php -ArgumentList \'-S '.$host.'\' -NoNewWindow"';
+            $res = popen($cmd, "r");
         } else {
-            exec('nohup php -S localhost:8787 > /dev/null 2>&1 &', $op);
+            exec('nohup php -S '.$host.' > /dev/null 2>&1 &');
         }
         sleep(2);
 
-        $host = 'localhost:8787';
         // $path = '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
         $path = '/tests/data/issue/236/base.yaml';
         $file = 'http://' . $host . $path;
@@ -263,6 +263,10 @@ YAML
         $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Dog']);
         $this->assertArrayHasKey('id', $openapi->components->schemas['Pet']->properties);
         $this->assertArrayHasKey('name', $openapi->components->schemas['Dog']->properties);
+
+        if (isset($res) && is_resource($petItems)) {
+            pclose($res);
+        }
     }
 
     public function testResolvePaths()
