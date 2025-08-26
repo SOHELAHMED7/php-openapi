@@ -19,13 +19,10 @@ RUN apt-get update && \
             curl \
             libcurl4-openssl-dev \
             libssl-dev \
-            procps \
         --no-install-recommends && \
         apt-get clean && \
         rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
         && pecl install xdebug-2.9.6 \
-        && docker-php-ext-install sockets \
-        && docker-php-ext-enable sockets \
         && docker-php-ext-enable xdebug \
         && docker-php-ext-install \
                 zip \

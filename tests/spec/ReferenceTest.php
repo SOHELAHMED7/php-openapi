@@ -9,39 +9,12 @@ use cebe\openapi\spec\Reference;
 use cebe\openapi\spec\RequestBody;
 use cebe\openapi\spec\Response;
 use cebe\openapi\spec\Schema;
-use donatj\MockWebServer\MockWebServer;
 
 /**
  * @covers \cebe\openapi\spec\Reference
  */
 class ReferenceTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var MockWebServer */
-//    protected static $server;
-
-
-//    public static  function setUpBeforeClass(): void
-//    {
-//        self::$server = new MockWebServer;
-//        self::$server->start();
-//
-////        $this->server = new MockWebServer();
-////        $this->server->stop();
-////        $this->server->start();
-////
-////        if (stripos(PHP_OS_FAMILY, 'Windows') !== false) {
-//////            echo "Running on Windows\n";
-//////            exec('ssh-keyscan -H '.$this->server->getHost().' | Out-File -Append -Encoding ASCII $env:USERPROFILE\.ssh\known_hosts');
-////        }
-//    }
-
-//    public static function tearDownAfterClass(): void
-//    {
-////        $this->server->stop();
-//        self::$server->stop();
-//
-//    }
-
     public function testResolveInDocument()
     {
         /** @var $openapi OpenApi */
@@ -261,33 +234,17 @@ YAML
 
     public function testResolveFileHttp()
     {
-//        $this->registerPaths();
-//        $this->handleMockServer();
-//        return;
-
-
-
-
-
-
-
         // $file = 'https://raw.githubusercontent.com/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
-
         if (stripos(PHP_OS_FAMILY, 'Windows') !== false) {
-//            exec('pwsh -Command "Start-Process php -ArgumentList \'-S localhost:8787\' -NoNewWindow"', $op);
             $cmd = 'powershell -Command "Start-Process php -ArgumentList \'-S localhost:8787\' -NoNewWindow"';
             popen($cmd, "r");
-
         } else {
             exec('nohup php -S localhost:8787 > /dev/null 2>&1 &', $op);
         }
         sleep(2);
 
-
-//        $this->assertNull($op);
-//        $host = static::$server->getHost() . ':' . static::$server->getPort();
         $host = 'localhost:8787';
-//        $path = '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
+        // $path = '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
         $path = '/tests/data/issue/236/base.yaml';
         $file = 'http://' . $host . $path;
         /** @var $openapi OpenApi */
@@ -712,99 +669,4 @@ YAML;
             $this->assertEquals($expected, $yaml, $yaml);
         }
     }
-
-    private function handleMockServer()
-    {
-//        $cmd = 'php -S localhost:8787';
-////        $cmd = 'pwd';
-//        exec($cmd, $output);
-//        $this->assertSame(0, $output);
-//        return;
-
-
-//        exec('cd tests/spec');
-//        exec('pwd', $op);
-//        $this->assertNull($op);
-//        return;
-
-
-//        file_put_contents(__DIR__.'/definitions.yaml', '
-//Pet:
-//  type: object
-//  properties:
-//    id:
-//      type: integer
-//      format: int64
-//Dog:
-//  type: object
-//  properties:
-//    name:
-//      type: string
-//');
-//
-//
-//
-//        file_put_contents(__DIR__.'/base.yaml', '
-//openapi: 3.0.0
-//info:
-//  title: Link Example
-//  version: 1.0.0
-//components:
-//  schemas:
-//    Pet:
-//      $ref: definitions.yaml#/Pet
-//    Dog:
-//      $ref: ##ABSOLUTEPATH##/definitions.yaml#/Dog
-//paths:
-//  \'/pet\':
-//    get:
-//      responses:
-//        200:
-//          description: return a pet
-//');
-
-    }
-
-//    private function registerPaths()
-//    {
-//        static::$server->setResponseOfPath(
-//            '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/definitions.yaml',
-//            '
-//Pet:
-//  type: object
-//  properties:
-//    id:
-//      type: integer
-//      format: int64
-//Dog:
-//  type: object
-//  properties:
-//    name:
-//      type: string
-//'
-//        );
-//
-//        static::$server->setResponseOfPath(
-//            '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml',
-//            '
-//openapi: 3.0.0
-//info:
-//  title: Link Example
-//  version: 1.0.0
-//components:
-//  schemas:
-//    Pet:
-//      $ref: definitions.yaml#/Pet
-//    Dog:
-//      $ref: ##ABSOLUTEPATH##/definitions.yaml#/Dog
-//paths:
-//  \'/pet\':
-//    get:
-//      responses:
-//        200:
-//          description: return a pet
-//'
-//        );
-//
-//    }
 }
