@@ -17,24 +17,30 @@ use donatj\MockWebServer\MockWebServer;
 class ReferenceTest extends \PHPUnit\Framework\TestCase
 {
     /** @var MockWebServer */
-    private $server;
+    protected static $server;
 
-//    protected function setUp(): void
-//    {
+
+    public static  function setUpBeforeClass(): void
+    {
+        self::$server = new MockWebServer;
+        self::$server->start();
+
 //        $this->server = new MockWebServer();
 //        $this->server->stop();
 //        $this->server->start();
 //
 //        if (stripos(PHP_OS_FAMILY, 'Windows') !== false) {
 ////            echo "Running on Windows\n";
-//            exec('ssh-keyscan -H '.$this->server->getHost().' | Out-File -Append -Encoding ASCII $env:USERPROFILE\.ssh\known_hosts');
+////            exec('ssh-keyscan -H '.$this->server->getHost().' | Out-File -Append -Encoding ASCII $env:USERPROFILE\.ssh\known_hosts');
 //        }
-//    }
-//
-//    protected function tearDown(): void
-//    {
+    }
+
+    public static function tearDownAfterClass(): void
+    {
 //        $this->server->stop();
-//    }
+        self::$server->stop();
+
+    }
 
     public function testResolveInDocument()
     {
@@ -255,7 +261,8 @@ YAML
 
     public function testResolveFileHttp()
     {
-        $this->handleMockServer();
+        $this->registerPaths();
+//        $this->handleMockServer();
 //        return;
 
 
@@ -266,10 +273,10 @@ YAML
 
         // $file = 'https://raw.githubusercontent.com/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
 
-//        $host = $this->server->getHost() . ':' . $this->server->getPort();
-        $host = 'localhost:8787';
-//        $path = '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
-        $path = '/tests/data/issue/236/base.yaml';
+        $host = static::$server->getHost() . ':' . static::$server->getPort();
+//        $host = 'localhost:8787';
+        $path = '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
+//        $path = '/tests/data/issue/236/base.yaml';
         $file = 'http://' . $host . $path;
         /** @var $openapi OpenApi */
         $openapi = Reader::readFromYaml(str_replace('##ABSOLUTEPATH##', dirname($file), file_get_contents($file)));
@@ -743,6 +750,49 @@ YAML;
 //        200:
 //          description: return a pet
 //');
+
+    }
+
+    private function registerPaths()
+    {
+        static::$server->setResponseOfPath(
+            '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/definitions.yaml',
+            '
+Pet:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+Dog:
+  type: object
+  properties:
+    name:
+      type: string
+'
+        );
+
+        static::$server->setResponseOfPath(
+            '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml',
+            '
+openapi: 3.0.0
+info:
+  title: Link Example
+  version: 1.0.0
+components:
+  schemas:
+    Pet:
+      $ref: definitions.yaml#/Pet
+    Dog:
+      $ref: ##ABSOLUTEPATH##/definitions.yaml#/Dog
+paths:
+  \'/pet\':
+    get:
+      responses:
+        200:
+          description: return a pet
+'
+        );
 
     }
 }
