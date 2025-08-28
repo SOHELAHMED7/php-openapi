@@ -237,15 +237,13 @@ YAML
         $host = 'localhost:8787'; # create mock web server to avoid calling real GitHub URL and rate limit hit
         // $file = 'https://raw.githubusercontent.com/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
         if (stripos(PHP_OS_FAMILY, 'Windows') !== false) {
-//            $cmd = 'powershell -Command "Start-Process php -ArgumentList \'-S '.$host.'\' -NoNewWindow -RedirectStandardOutput \'NUL\'"';
-            $cmd = 'powershell -Command "Start-Process php -ArgumentList \'-S localhost:8787\' -WindowStyle Hidden -RedirectStandardOutput \'NUL:\'"';
-
-
+            $cmd = 'powershell -Command "Start-Process php -ArgumentList \'-S '.$host.'\' -NoNewWindow"';
             $res = popen($cmd, "r");
         } else {
             exec('nohup php -S '.$host.' > /dev/null 2>&1 &');
         }
         // ENH: turn off the server
+        // ENH: avoid displaying stdout in CI while starting the server
         sleep(2);
 
         // $path = '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
