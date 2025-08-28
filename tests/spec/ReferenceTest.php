@@ -238,7 +238,7 @@ YAML
         // $file = 'https://raw.githubusercontent.com/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
         if (stripos(PHP_OS_FAMILY, 'Windows') !== false) {
 //            $cmd = 'powershell -Command "Start-Process php -ArgumentList \'-S '.$host.'\' -NoNewWindow -RedirectStandardOutput \'NUL\'"';
-            $cmd = 'powershell -Command "php -S localhost:8787 *> NUL 2>&1 &"';
+            $cmd = 'powershell -Command "Start-Job { php -S localhost:8787 *> NUL: 2>&1 }"';
             $res = popen($cmd, "r");
         } else {
             exec('nohup php -S '.$host.' > /dev/null 2>&1 &');
