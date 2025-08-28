@@ -242,6 +242,7 @@ YAML
         } else {
             exec('nohup php -S '.$host.' > /dev/null 2>&1 &');
         }
+        // ENH: turn off the server
         sleep(2);
 
         // $path = '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
