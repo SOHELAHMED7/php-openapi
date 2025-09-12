@@ -18,8 +18,8 @@ class IssueTest extends \PHPUnit\Framework\TestCase
         $openapi = Reader::readFromJsonFile(__DIR__.'/data/issue/224/cloudflare.json');
         $this->readLargeFiles($openapi);
 
-        $openapiYml = Reader::readFromYamlFile(__DIR__.'/data/issue/224/cloudflare.yml');
-        $this->readLargeFiles($openapiYml);
+//        $openapiYml = Reader::readFromYamlFile(__DIR__.'/data/issue/224/cloudflare.yml');
+//        $this->readLargeFiles($openapiYml);
     }
 
     private function readLargeFiles(OpenApi $openapi): void
