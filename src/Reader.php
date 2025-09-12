@@ -101,7 +101,7 @@ class Reader
                 $context->mode = $resolveReferences;
             }
             if ($spec instanceof DocumentContextInterface) {
-//                $spec->setDocumentContext($spec, new JsonPointer(''));
+//                $spec->setDocumentContext($spec, new JsonPointer('')); # TODO
             }
             $spec->resolveReferences();
         }
