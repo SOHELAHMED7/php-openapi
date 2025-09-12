@@ -28,7 +28,7 @@ class Reader
      * @phpstan-template T of SpecObjectInterface
      * @phpstan-param class-string<T> $baseType
      * @phpstan-return T
-     * @param string $json the JSON string to decode.
+     * @param string $filename the JSON string to decode.
      * @param string $baseType the base Type to instantiate. This must be an instance of [[SpecObjectInterface]].
      * The default is [[OpenApi]] which is the base type of a OpenAPI specification file.
      * You may choose a different type if you instantiate objects from sub sections of a specification.
