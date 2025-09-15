@@ -49,7 +49,7 @@ test: unit test-recursion.json test-recursion2.yaml test-recursion3_index.yaml t
 unit:
 	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --exclude-group gigantic --verbose --colors=always $(TESTCASE)
 
-unit_gigantic: # run test which requires big packages: apis-guru/openapi-directory, nexmo/api-specification
+unit_gigantic: # run test which requires big packages (>778 MB): apis-guru/openapi-directory, nexmo/api-specification
 	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --group gigantic --verbose --colors=always
 
 # test specific JSON files in tests/spec/data/
