@@ -529,6 +529,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         return $extensions;
     }
 
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->getSerializableData();
